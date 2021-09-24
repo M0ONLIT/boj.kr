@@ -13,4 +13,4 @@ for i in range(count):
         j=j*100/count+c
         ratio+=1^(check(i, j, O1) & check(i, j, O2) & check(i, j, O3))
 print(ratio*10000/total)
-#4683.7031 4683.686
+#pypy3
