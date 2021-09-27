@@ -31,9 +31,7 @@ def find_sol(minx, maxx, func):
     if loss<miny or maxy<-loss:
         return 'NO'
     midx=miny
-    count=0
-    while abs(maxx-minx)>loss or count<=100:
-        count+=1
+    while abs(maxx-minx)>loss:
         midx=(minx+maxx)/2
         midy=f(func, midx)
         if -loss<midy<loss:
