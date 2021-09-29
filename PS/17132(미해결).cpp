@@ -60,7 +60,7 @@ int lca(int x, int y){
 		x=upto(x, 1);
 	}
 	return x;
-
+}
 int main(){
   ios_base::sync_with_stdio(NULL);
   cin.tie(NULL); cout.tie(NULL);
@@ -68,7 +68,7 @@ int main(){
 
   cin>>n;
 	for(i=0;i<n-1;i++){
-		cin>>x>>y>>>>cost;
+		cin>>x>>y>>cost;
 		tree[x].push_back({y, cost});
 		tree[y].push_back({x, cost});
 	}
