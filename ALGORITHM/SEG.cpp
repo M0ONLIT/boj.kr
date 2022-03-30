@@ -11,7 +11,7 @@ public:
 
   segment_tree(vector<int> &x){
     m=x.size();
-    v=vector<int>(m*4);
+    v=vector<int>(m*2);
     info=x;
     make_tree(0, m-1, 1);
   }
