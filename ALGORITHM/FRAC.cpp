@@ -7,8 +7,7 @@ using namespace std;
 
 
 ll gcd(ll a, ll b){
-  if(!b) return a;
-  return gcd(b, a%b);
+  return b?gcd(b, a%b):a;
 }
 class Fraction{
 public:
