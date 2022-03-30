@@ -4,13 +4,15 @@ typedef long long ll;
 using namespace std;
 ll gcd(ll a, ll b){
   return b?gcd(b, a%b):a;
-}
+} //#include<numeric>에 정의되어 있음
 class Fraction{
-public: ll num, denom;
-  Fraction(int x){
+public:
+  ll num, denom;
+  
+  Fraction(ll x){
     num=x, denom=1;
   };
-  Fraction(int x, int y){
+  Fraction(ll x, ll y){
     num=x, denom=y;
     yakbun();
   }
