@@ -1,5 +1,6 @@
 #include<vector>
 using namespace std;
+typedef long long ll;
 
 const int nanugi=1000000007;
 
@@ -18,7 +19,7 @@ public:
   int make_tree(int start, int end, int i){
     int mid=(start+end)/2;
     if(start==end)
-      v[i]=info[mid];
+      return v[i]=info[mid];
     return v[i]=make_tree(start, mid, i*2)+make_tree(mid+1, end, i*2+1);
   }
 
@@ -36,7 +37,8 @@ public:
   }
 
   void insert(int index, int value){
-    return insert(index, value, 0, m-1, 1);
+    insert(index, value, 0, m-1, 1);
+    return;
   }
   void insert(int index, int value, int start, int end, int i){
     int mid=(start+end)/2;
