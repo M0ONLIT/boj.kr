@@ -10,10 +10,10 @@ public:
   int m;
 
   segment_tree(vector<int> &x){
-    m=x.size()-1;
+    m=x.size();
     v=vector<int>(m*4);
     info=x;
-    make_segment_tree(0, m-1, 1);
+    make_tree(0, m-1, 1);
   }
   int make_tree(int start, int end, int i){
     int mid=(start+end)/2;
@@ -35,8 +35,8 @@ public:
       return find(x, y, start, mid, i*2)+find(x, y, mid+1, end, i*2+1);
   }
 
-  void insert(int index){
-    return insert(index,  1,  0,  m-1,  1);
+  void insert(int index, int value){
+    return insert(index, value, 0, m-1, 1);
   }
   void insert(int index, int value, int start, int end, int i){
     int mid=(start+end)/2;
