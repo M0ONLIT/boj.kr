@@ -1,5 +1,5 @@
 
-   class segment_tree:
+class segment_tree:
     def __init__(self, x):
         self.m=len(x)
         self.v=[0]*2*m
