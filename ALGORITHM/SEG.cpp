@@ -1,4 +1,6 @@
 #include<vector>
+#include<iostream>
+
 using namespace std;
 typedef long long ll;
 
@@ -23,20 +25,33 @@ public:
     return v[i]=make_tree(start, mid, i*2)+make_tree(mid+1, end, i*2+1);
   }
 
-  int find(int x, int y){
-    return find(x, y, 0, this->m-1, 1)
+  int sum(int x, int y){ //구간 합을 구한다.
+    return sum(x, y, 0, m-1, 1);
   }
-  int find(int x, int y, int start, int end, int i){
+  int sum(int x, int y, int start, int end, int i){
     int mid=(start+end)/2;
     if(y<start || end<x)
       return 0;
     else if(x<=start && end<=y)
       return v[i];
     else
-      return find(x, y, start, mid, i*2)+find(x, y, mid+1, end, i*2+1);
+      return sum(x, y, start, mid, i*2)+sum(x, y, mid+1, end, i*2+1);
+  }
+  
+  int find(int x){ //x번째 원소가 어느 위치에 있는지 찾는다.
+      return find(x, 0, m-1, 1);
+  }
+  int find(int x, int start, int end, int i){
+      int mid=(start+end)/2;
+      if(start==end)
+          return mid;
+      if(x<=v[i*2])
+          return find(x, start, mid, i*2);
+      else
+          return find(x-v[i*2], mid+1, end, i*2+1);
   }
 
-  void insert(int index, int value){
+  void insert(int index, int value){ //한 곳의 값을 value만큼 증감시킨다.
     insert(index, value, 0, m-1, 1);
     return;
   }
@@ -56,3 +71,9 @@ public:
     }
   }
 };
+
+int main(){
+  ios_base::sync_with_stdio(0);
+  cin.tie(0); cout.tie(0);
+
+}
