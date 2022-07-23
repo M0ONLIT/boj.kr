@@ -1,0 +1,60 @@
+#include <iostream>
+#include <algorithm> //fill(v.begin(), v.end(), 0);
+#include <vector>
+#include <memory.h>
+#define endl '\n';
+using namespace std;
+
+int n, m, k, ans;
+vector<int> people[1005];
+int memory[1005];
+int match[1005];
+
+int dfs(int x){
+  for(int i: people[x]){
+    if(memory[i] || match[i]==x)
+      continue;
+
+    memory[i]=1;
+    if(match[i]==0 || dfs(match[i])){
+      match[i]=x;
+      //cout<<x<<' '<<i<<endl;
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
+    
+    int p, q;
+    cin>>n>>m>>k;
+    for(int i=1; i<=n; i++){
+        cin>>p;
+        for(int j=0; j<p; j++){
+            cin>>q;
+            people[i].push_back(q);
+        }
+    }
+    for(int i=1; i<=n; i++){
+        fill(memory, memory+1005, 0);
+        ans+=dfs(i);
+    }
+    for(int i=1, t=0; i<=n && t<k; i++){
+        fill(memory, memory+1005, 0);
+        while(t<k && dfs(i)){
+            fill(memory, memory+1005, 0);
+            ans++;
+            t++;
+        }
+    }
+    /*
+    for(int i=1; i<=n; i++)
+        cout<<match[i]<<" ";
+    cout<<endl;
+    */
+    cout<<min(ans, n+k);
+    return 0;
+}
