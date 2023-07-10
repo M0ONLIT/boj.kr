@@ -15,7 +15,7 @@ int c(pii x, pii y){
   return x.first+x.second>y.first+y.second;
 }
 int d(pii x, pii y){
-  return x.second>y.second;
+  return x.second>y.second;..
 }
 
 void print_vector(vector<pii> v){
