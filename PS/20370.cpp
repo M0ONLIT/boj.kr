@@ -1,14 +1,16 @@
 #include<iostream>
 #include<vector>
 #include<algorithm>
+#include<tuple>
 using namespace std;
 
 typedef long long ll;
 typedef pair<ll, ll> pll;
 
-int n, m, check[80005];
-ll s1, s2;
+int n, k, check[80005];
+ll ans;
 vector<pll> v;
+vector<int> p, q;
 
 class segment_tree{
 public:
@@ -17,7 +19,7 @@ public:
   int m;
 
   segment_tree(vector<int> &x){
-    m=x.size()-1;
+    m=x.size();
     v=vector<int>(m*4);
     info=x;
     make_tree(0, m-1, 1);
@@ -25,52 +27,45 @@ public:
   int make_tree(int start, int end, int i){
     int mid=(start+end)/2;
     if(start==end)
-      v[i]=info[mid];
-    return v[i]=make_tree(start, mid, i*2)+make_tree(mid+1, end, i*2+1);
+      return v[i]=mid;
+    int a, b;
+    tie(a, b)=make_tuple(make_tree(start, mid, i*2), make_tree(mid+1, end, i*2+1));
+    return v[i]=info[a]>info[b]?a:b;
   }
 
-  int sum(int x, int y){ //구간 합을 구한다.
-    return sum(x, y, 0, m-1, 1);
+  int big(int x, int y){
+    return big(x, y, 0, m-1, 1);
   }
-  int sum(int x, int y, int start, int end, int i){
+  int big(int x, int y, int start, int end, int i){
     int mid=(start+end)/2;
     if(y<start || end<x)
       return 0;
     else if(x<=start && end<=y)
       return v[i];
-    else
-      return sum(x, y, start, mid, i*2)+sum(x, y, mid+1, end, i*2+1);
-  }
-
-  int find(int x, int y){
-    return find(x, y, 0, m-1, 1);
-  }
-  int find(int x, int y, int start, int end, int i){
-    int mid=(start+end)/2;
-    if(y<start || end<x)
-      return 0;
-    else if(x<=start && end<=y)
-      return v[i];
-    else
-      return find(x, y, start, mid, i*2)+find(x, y, mid+1, end, i*2+1);
+    else{
+      int a, b;
+      tie(a, b)=make_tuple(big(x, y, start, mid, i*2), big(x, y, mid+1, end, i*2+1));
+      return info[a]>info[b]?a:b;
+    }
   }
 
   void insert(int index){
-    return insert(index,  1,  0,  m-1,  1);
+    return insert(index, 0, 0, m-1, 1);
   }
   void insert(int index, int value, int start, int end, int i){
     int mid=(start+end)/2;
     if(index<start || end<index)
       return;
     else if(start==end && mid==index){
-      v[i]+=value;
+      info[mid]=value;
       return;
     }
     else{
       insert(index, value, start, mid, i*2);
       insert(index, value, mid+1, end, i*2+1);
-      v[i]=v[i*2]+v[i*2+1];
-      return;
+      int a, b;
+      tie(a, b)={v[i*2], v[i*2+1]};
+      v[i]=info[a]>info[b]?a:b;
     }
   }
 
@@ -80,21 +75,55 @@ public:
 };
 
 
-int c(pll x, pll y){
-  if(x.first+x.second==y.first+y.second)
-    return x.first>y.first;
-  return x.first+x.second>y.first+y.second;
+int comp(pll x, pll y){
+  return x.second>y.second;
 }
 
 int main(){
   ios_base::sync_with_stdio(0);
   cin.tie(0), cout.tie(0);
-  int i;
+  int i, x, y;
 
-  cin>>n>>m;
+  cin>>n>>k;
   v=vector<pll>(n);
+  p=vector<int>(n);
+  q=vector<int>(n);
   for(i=0; i<n; i++) cin>>v[i].first;
   for(i=0; i<n; i++) cin>>v[i].second;
+  sort(v.begin(), v.end(), comp);
+  for(i=0; i<n; i++){
+    p[i]=v[i].first+v[i].second;
+    q[i]=v[i].first;
+  }
+  int ptr=k;
+  segment_tree P(p), Q(q);
 
-  sort(v.begin(), v.end(), c);
+  for(i=0; i<k; i++){
+    x=P.big(0, ptr-1);
+    y=Q.big(ptr, n-1);
+
+    if(p[x]-v[ptr].second>q[y]){
+      check[x]=1;
+      P.insert(x);
+      ptr++;
+    }
+    else{
+      check[y]=1;
+      Q.insert(y);
+    }
+    while(check[ptr]) ptr++;
+  }
+
+  x=y=0;
+  for(i=0; i<n; i++){
+    if(check[i] && x<k){
+      ans+=v[i].first;
+      x++;
+    }
+    else if(!check[i] && y<k){
+      ans-=v[i].second;
+      y++;
+    }
+  }
+  cout<<ans;
 }
