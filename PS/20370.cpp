@@ -2,6 +2,7 @@
 #include<vector>
 #include<algorithm>
 #include<tuple>
+#include<cassert>
 using namespace std;
 
 typedef long long ll;
@@ -39,12 +40,13 @@ public:
   int big(int x, int y, int start, int end, int i){
     int mid=(start+end)/2;
     if(y<start || end<x)
-      return 0;
+      return -1;
     else if(x<=start && end<=y)
       return v[i];
     else{
       int a, b;
       tie(a, b)=make_tuple(big(x, y, start, mid, i*2), big(x, y, mid+1, end, i*2+1));
+      if(a==-1 || b==-1) return max(a, b);
       return info[a]>info[b]?a:b;
     }
   }
@@ -57,7 +59,7 @@ public:
     if(index<start || end<index)
       return;
     else if(start==end && mid==index){
-      info[mid]=value;
+      info[index]=value;
       return;
     }
     else{
@@ -103,12 +105,14 @@ int main(){
     y=Q.big(ptr, n-1);
 
     if(p[x]-v[ptr].second>q[y]){
-      check[x]=1;
+      check[x]++;
       P.insert(x);
+      Q.insert(x);
       ptr++;
     }
     else{
-      check[y]=1;
+      check[y]++;
+      P.insert(y);
       Q.insert(y);
     }
     while(check[ptr]) ptr++;
