@@ -8,11 +8,6 @@ using namespace std;
 typedef long long ll;
 typedef pair<ll, ll> pll;
 
-int n, k, check[80005];
-ll ans;
-vector<pll> v;
-vector<int> p, q;
-
 class segment_tree{
 public:
   vector<int> info;
@@ -31,7 +26,8 @@ public:
       return v[i]=mid;
     int a, b;
     tie(a, b)=make_tuple(make_tree(start, mid, i*2), make_tree(mid+1, end, i*2+1));
-    return v[i]=info[a]>info[b]?a:b;
+
+    return v[i]=info[a]<=info[b]?a:b;
   }
 
   int big(int x, int y){
@@ -47,12 +43,12 @@ public:
       int a, b;
       tie(a, b)=make_tuple(big(x, y, start, mid, i*2), big(x, y, mid+1, end, i*2+1));
       if(a==-1 || b==-1) return max(a, b);
-      return info[a]>info[b]?a:b;
+      return info[a]<=info[b]?a:b;
     }
   }
 
-  void insert(int index){
-    return insert(index, 0, 0, m-1, 1);
+  void insert(int index, int value){
+    return insert(index, value, 0, m-1, 1);
   }
   void insert(int index, int value, int start, int end, int i){
     int mid=(start+end)/2;
@@ -67,7 +63,7 @@ public:
       insert(index, value, mid+1, end, i*2+1);
       int a, b;
       tie(a, b)={v[i*2], v[i*2+1]};
-      v[i]=info[a]>info[b]?a:b;
+      v[i]=info[a]<=info[b]?a:b;
     }
   }
 
@@ -76,58 +72,26 @@ public:
   }
 };
 
-
-int comp(pll x, pll y){
-  return x.second>y.second;
-}
-
 int main(){
   ios_base::sync_with_stdio(0);
   cin.tie(0), cout.tie(0);
-  int i, x, y;
 
-  cin>>n>>k;
-  v=vector<pll>(n);
-  p=vector<int>(n);
-  q=vector<int>(n);
-  for(i=0; i<n; i++) cin>>v[i].first;
-  for(i=0; i<n; i++) cin>>v[i].second;
-  sort(v.begin(), v.end(), comp);
-  for(i=0; i<n; i++){
-    p[i]=v[i].first+v[i].second;
-    q[i]=v[i].first;
-  }
-  int ptr=k;
-  segment_tree P(p), Q(q);
+  int n, m, i, c, x, y;
+  cin>>n;
 
-  for(i=0; i<k; i++){
-    x=P.big(0, ptr-1);
-    y=Q.big(ptr, n-1);
+  vector<int> v(n);
+  for(i=0; i<n; i++) cin>>v[i];
+  segment_tree T(v);
 
-    if(p[x]-v[ptr].second>q[y]){
-      check[x]++;
-      P.insert(x);
-      Q.insert(x);
-      ptr++;
+  cin>>m;
+  for(i=0; i<m; i++){
+    cin>>c>>x>>y;
+    if(c==1){
+      T.insert(x-1, y);
     }
     else{
-      check[y]++;
-      P.insert(y);
-      Q.insert(y);
+      cout<<T.big(x-1, y-1)+1<<'\n';
     }
-    while(check[ptr]) ptr++;
   }
 
-  x=y=0;
-  for(i=0; i<n; i++){
-    if(check[i] && x<k){
-      ans+=v[i].first;
-      x++;
-    }
-    else if(!check[i] && y<k){
-      ans-=v[i].second;
-      y++;
-    }
-  }
-  cout<<ans;
 }
