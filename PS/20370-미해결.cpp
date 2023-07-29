@@ -117,15 +117,14 @@ int main(){
     while(check[ptr]) ptr++;
   }
 
-  x=y=0;
+  x=0;
   for(i=0; i<n; i++){
-    if(check[i] && x<k){
+    if(check[i]){
       ans+=v[i].first;
-      x++;
     }
-    else if(!check[i] && y<k){
+    else if(x<k){
       ans-=v[i].second;
-      y++;
+      x++;
     }
   }
   cout<<ans;
