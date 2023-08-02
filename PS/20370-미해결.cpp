@@ -1,3 +1,5 @@
+//https://www.acmicpc.net/problem/20370
+
 #include<iostream>
 #include<vector>
 #include<algorithm>
@@ -13,7 +15,7 @@ ll ans;
 vector<pll> v;
 vector<int> p, q;
 
-class segment_tree{
+class segment_tree{ //세그먼트 트리 클래스
 public:
   vector<int> info;
   vector<int> v;
@@ -30,11 +32,12 @@ public:
     if(start==end)
       return v[i]=mid;
     int a, b;
-    tie(a, b)=make_tuple(make_tree(start, mid, i*2), make_tree(mid+1, end, i*2+1));
+    a=make_tree(start, mid, i*2);
+    b=make_tree(mid+1, end, i*2+1);
     return v[i]=info[a]>info[b]?a:b;
   }
 
-  int big(int x, int y){
+  int big(int x, int y){ //구간 x~y에서 값이 가장 큰 index를 반환함(범위 0~n-1)
     return big(x, y, 0, m-1, 1);
   }
   int big(int x, int y, int start, int end, int i){
@@ -45,13 +48,14 @@ public:
       return v[i];
     else{
       int a, b;
-      tie(a, b)=make_tuple(big(x, y, start, mid, i*2), big(x, y, mid+1, end, i*2+1));
+      a=big(x, y, start, mid, i*2);
+      b=big(x, y, mid+1, end, i*2+1);
       if(a==-1 || b==-1) return max(a, b);
       return info[a]>info[b]?a:b;
     }
   }
 
-  void insert(int index){
+  void insert(int index){ //index번째에 있는 값을 0으로 바꿈
     return insert(index, 0, 0, m-1, 1);
   }
   void insert(int index, int value, int start, int end, int i){
@@ -66,7 +70,8 @@ public:
       insert(index, value, start, mid, i*2);
       insert(index, value, mid+1, end, i*2+1);
       int a, b;
-      tie(a, b)={v[i*2], v[i*2+1]};
+      a=v[i*2];
+      b=v[i*2+1];
       v[i]=info[a]>info[b]?a:b;
     }
   }
