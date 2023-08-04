@@ -11,3 +11,8 @@ for i in range(m):
         if (x==a or a=='-') and (y==b or b=='-') and (z==c or c=='-'):
             counter+=1
     print(counter)
+
+'''
+풀이법: 브루트포스
+시간복잡도 : O(nm)
+'''

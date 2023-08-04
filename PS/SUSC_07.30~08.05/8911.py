@@ -37,3 +37,8 @@ for testcase in range(int(input())):
     for i in s:
         T.move(i)
     print(T.answer())
+
+'''
+풀이법: 구현
+시간복잡도: 케이스 하나당 O(n)
+'''
