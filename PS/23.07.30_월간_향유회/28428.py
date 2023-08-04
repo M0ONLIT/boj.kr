@@ -7,13 +7,18 @@ sx, sy, mx, my=ints()
 s=Fraction(sy, sx)
 m=Fraction(my, mx)
 
-if s>m:
-    if m<=1:
-        print('NO')
-    else:
+if s>1:
+    if m>1:
         print('YES')
+    else:
+        print('NO')
+elif s==1:
+    if s==m:
+        print('YES')
+    else:
+        print('NO')
 else:
-    if m>=1:
-        print('NO')
-    else:
+    if m<1:
         print('YES')
+    else:
+        print('NO')
