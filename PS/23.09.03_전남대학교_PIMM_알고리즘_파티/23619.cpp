@@ -71,7 +71,7 @@ class Q {
 } query[100005];
 
 int n, m, ptr;
-int s[200005], e[200005];
+int s[200005], e[200005], weight[100005];
 vector<int> tree[200005];
 
 void dfs(int node){
@@ -84,7 +84,22 @@ void dfs(int node){
 int main(){
   ioset();
 
+  int i, x, p, q, r, s;
   cin >> n >> m;
+  for(i=1; i<=n; i++){
+    cin>>x;
+    if(i==1) continue;
+    tree[x].push_back(i);
+  }
+  for(i=1; i<=n; i++)
+    cin>>weight[i];
+
+  for(i=0; i<m; i++){
+    cin>>query[i].opion>>query[i].a;
+    if(query[i].option==1)
+      cin>>query[i].b>>query[i].c
+      tree[query[i].a].push_back(query[i].b);
+  }
 
 
 }
