@@ -34,19 +34,6 @@ public:
       return sum(x, y, start, mid, i*2)+sum(x, y, mid+1, end, i*2+1);
   }
 
-  int find(int x, int y){
-    return find(x, y, 0, m-1, 1)
-  }
-  int find(int x, int y, int start, int end, int i){
-    int mid=(start+end)/2;
-    if(y<start || end<x)
-      return 0;
-    else if(x<=start && end<=y)
-      return v[i];
-    else
-      return find(x, y, start, mid, i*2)+find(x, y, mid+1, end, i*2+1);
-  }
-
   void insert(int index){
     return insert(index, 1, 0, m-1, 1);
   }
