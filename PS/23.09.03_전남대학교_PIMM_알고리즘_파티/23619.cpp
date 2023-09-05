@@ -19,7 +19,7 @@ public:
     m = x.size();
     v = vector<int>(m * 4);
     info = x;
-    make_segment_tree(0, m - 1, 1);
+    make_tree(0, m - 1, 1);
   }
 
   int make_tree(int start, int end, int i) {
@@ -42,8 +42,8 @@ public:
       return sum(x, y, start, mid, i * 2) + sum(x, y, mid + 1, end, i * 2 + 1);
   }
 
-  void insert(int index) {
-    return insert(index, 1, 0, m - 1, 1);
+  void insert(int index, int value) {
+    return insert(index, value, 0, m - 1, 1);
   }
   void insert(int index, int value, int start, int end, int i) {
     int mid = (start + end) / 2;
@@ -67,6 +67,7 @@ public:
 };
 
 class Q {
+public:
   int option, a, b, c;
 } query[100005];
 
@@ -84,7 +85,7 @@ void dfs(int node){
 int main(){
   ioset();
 
-  int i, x, p, q, r, s;
+  int i, x, p, q, r, ans;
   cin >> n >> m;
   for(i=1; i<=n; i++){
     cin>>x;
@@ -95,11 +96,26 @@ int main(){
     cin>>weight[i];
 
   for(i=0; i<m; i++){
-    cin>>query[i].opion>>query[i].a;
-    if(query[i].option==1)
-      cin>>query[i].b>>query[i].c
+    cin>>query[i].option>>query[i].a;
+    if(query[i].option==1){
+      cin>>query[i].b>>query[i].c;
       tree[query[i].a].push_back(query[i].b);
+    }
   }
+  dfs(1);
+  vector<int> v(ptr+1);
+  for(i=1; i<=n; i++){
+    v[s[i]]=weight[i];
+  }
+  segment_tree SEG(v);
 
-
+  for(i=0; i<m; i++){
+    if(query[i].option==1){
+      SEG.insert(s[query[i].b], query[i].c);
+    }
+    else{
+      ans=SEG.sum(s[query[i].a], e[query[i].a]);
+      cout<<(ans?ans:-1)<<'\n';
+    }
+  }
 }
