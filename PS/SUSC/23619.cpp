@@ -1,5 +1,12 @@
-#include <vector>
+#include<iostream>
+#include<vector>
+#include<tuple>
+#include<algorithm>
+
+#define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
+
 using namespace std;
+typedef long long ll;
 
 class segment_tree {
 public:
@@ -8,17 +15,11 @@ public:
   int m;
 
   segment_tree() {}
-  segment_tree(int x){
-    m = x;
-    v = vector<int>(m * 4);
-    info = vector<int>(m);
-    make_tree(0, m - 1, 1);
-  }
   segment_tree(vector<int>& x) {
     m = x.size();
     v = vector<int>(m * 4);
     info = x;
-    make_tree(0, m - 1, 1);
+    make_segment_tree(0, m - 1, 1);
   }
 
   int make_tree(int start, int end, int i) {
@@ -64,3 +65,26 @@ public:
     fill(v.begin(), v.end(), x);
   }
 };
+
+class Q {
+  int option, a, b, c;
+} query[100005];
+
+int n, m, ptr;
+int s[200005], e[200005];
+vector<int> tree[200005];
+
+void dfs(int node){
+  s[node]=++ptr;
+  for(int i: tree[node])
+    dfs(i);
+  e[node]=ptr;
+}
+
+int main(){
+  ioset();
+
+  cin >> n >> m;
+
+
+}
