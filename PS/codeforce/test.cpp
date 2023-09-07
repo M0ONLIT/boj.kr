@@ -1,94 +1,71 @@
-#include<iostream>
-#include<vector>
-#include<tuple>
-#include<algorithm>
-
-#define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
 
 using namespace std;
-typedef long long ll;
-typedef pair<ll, ll> pii;
 
-class segment_tree{
-public:
-  vector<ll> info;
-  vector<ll> v;
-  vector<ll> v2;
-  ll m;
+// 그래프의 정점 수
+const int MAX_V = 1005;
 
-  segment_tree(vector<ll> &x){
-    m=x.size();
-    v=vector<ll>(m*4);
-    v2=vector<ll>(m*4);
-  }
+// 다익스트라 알고리즘 함수
+int dijkstra(int s, int e, int k, vector<vector<int>>& graph) {
+    vector<int> dist(MAX_V, INT_MAX); // 최단 거리를 저장할 배열
 
-  void sum(ll x, ll y, ll value, ll value2){
-    sum(x, y, value, value2, 0, m-1, 1);
-  }
-  void sum(ll x, ll y, ll value, ll value2, ll start, ll end, ll i){
-    ll mid=(start+end)/2;
-    if(y<start || end<x)
-      return;
-    else if(x<=start && end<=y){
-      if(!v[i]){
-        v[i]=value;
-        v2[i]=value2;
-      }
+    dist[s] = 0; // 시작 정점의 최단 거리는 0으로 초기화
+
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.push({0, s});
+
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        int d = pq.top().first;
+        pq.pop();
+
+        if (u == e) break; // 목표 정점에 도달하면 종료
+
+        // 현재 정점에서 갈 수 있는 모든 정점을 확인
+        for (int v : graph[u]) {
+            if (v != k && dist[u] + 1 < dist[v]) {
+                dist[v] = dist[u] + 1;
+                pq.push({dist[v], v});
+            }
+        }
     }
-    else{
-      sum(x, y, value, value2, start, mid, i*2);
-      sum(x, y, value, value2, mid+1, end, i*2+1);
-    }
-  }
 
-  pii insert(ll index){
-    return insert(index, 0, 0, m-1, 1);
-  }
-  pii insert(ll index, ll value, ll start, ll end, ll i){ //{순서, 색}
-    ll mid=(start+end)/2;
-    if(index<start || end<index)
-      return make_pair(0, 0);
-    else if(start==end && mid==index){
-      return make_pair(v2[i], v[i]);
-    }
-    else if(v[i]){
-      pii p=make_pair(v2[i], v[i]);
-      pii q=insert(index, value, start, mid, i*2);
-      pii r=insert(index, value, mid+1, end, i*2+1);
-      if(q.second==0 && r.second==0)
-        return p;
-      else if(q.second==0){
-        return (p.first<r.first)?p:r;
-      }
-      else if(r.second==0){
-        return (p.first<q.first)?p:q;
-      }
-      else{
-        cout<<'!';
-        return make_pair(0, 0);
-      }
-    }
-    else{
-      pii p=insert(index, value, start, mid, i*2);
-      pii q=insert(index, value, mid+1, end, i*2+1);
-      return (p.second==0)?q:p;
-    }
-  }
-};
+    return dist[e];
+}
 
-ll n, q;
+int main() {
+    int n, m, s, e; // 정점 수, 간선 수, 시작 정점, 목표 정점
+    cin >> n >> m >> s >> e;
 
-int main(){
-  ioset();
-  ll i, a, b, x;
-  cin>>n>>q;
-  vector<ll> v(n+5);
-  segment_tree tree(v);
-  for(i=1; i<=q; i++){
-    cin>>a>>b>>x;
-    tree.sum(a, b, x, i);
-  }
-  for(i=1; i<=n; i++){
-    cout<<tree.insert(i).second<<' ';
-  }
+    vector<vector<int>> graph(n+1); //수정
+
+    // 간선 정보 입력
+    for (int i = 0; i < m; ++i) {
+        int u, v;
+        cin >> u >> v;
+        graph[u - 1].push_back(v - 1);
+        graph[v - 1].push_back(u - 1); // 무방향 그래프인 경우
+    }
+
+    for (int i = 1; i <= n; ++i) {
+        if (i != s) {
+            int shortestDistance = dijkstra(s - 1, e - 1, i - 1, graph);
+
+            // 최단 경로 출력
+            if (shortestDistance != INT_MAX) {
+                cout << shortestDistance + 1;
+            } else {
+                cout << -1; // 이동이 불가능한 경우
+            }
+        }
+        else {
+          cout << -1;
+        }
+        cout << '\n';
+    }
+
+    return 0;
 }

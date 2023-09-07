@@ -1,5 +1,12 @@
-#include <vector>
+#include<iostream>
+#include<vector>
+#include<tuple>
+#include<algorithm>
+
+#define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
+
 using namespace std;
+typedef long long ll;
 
 class lazy_segment_tree {
 public:
@@ -32,7 +39,7 @@ public:
 
   int sum(int x, int y, int start, int end, int i) {
     if (lazy[i] != 0) {
-      v[i] += (end - start + 1) * lazy[i];
+      v[i] += lazy[i];
       if (start != end) {
         lazy[i * 2] += lazy[i];
         lazy[i * 2 + 1] += lazy[i];
@@ -73,3 +80,41 @@ public:
     fill(v.begin(), v.end(), x);
   }
 };
+
+int n, m, ptr;
+int s[200005], e[200005];
+vector<int> tree[200005];
+
+void dfs(int node){
+  s[node]=++ptr;
+  for(int i: tree[node])
+    dfs(i);
+  e[node]=ptr;
+}
+
+int main(){
+  ioset();
+
+  int i, x, p, q, r, ans;
+  cin >> n >> m;
+  for(i=1; i<=n; i++){
+    cin>>x;
+    if(i==1) continue;
+    tree[x].push_back(i);
+  }
+  dfs(1);
+  vector<int> v(ptr+1);
+  lazy_segment_tree SEG(v);
+
+  for(i=0; i<m; i++){
+    cin>>p>>q;
+    if(p==1){
+      cin>>r;
+      SEG.insert(s[q], e[q], r);
+    }
+    else{
+      ans=SEG.sum(s[q], s[q]);
+      cout<<ans<<'\n';
+    }
+  }
+}
