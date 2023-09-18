@@ -1,4 +1,9 @@
-#include <vector>
+#include<iostream>
+#include<vector>
+#include<tuple>
+#include<algorithm>
+#define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
+
 using namespace std;
 
 class segment_tree {
@@ -21,7 +26,7 @@ public:
     int mid = (start + end) / 2;
     int left = make_tree(start, mid, i * 2);
     int right = make_tree(mid + 1, end, i * 2 + 1);
-    if (info[left] >= info[right])
+    if (info[left] <= info[right])
       return v[i] = left;
     else
       return v[i] = right;
@@ -44,12 +49,12 @@ public:
     else if (right == -1)
       return left;
     else
-      return (info[left] >= info[right]) ? left : right;
+      return (info[left] <= info[right]) ? left : right;
   }
 
   int get(int x, int y) {
-    int maxIndex = find(x, y);
-    return info[maxIndex];
+    int minIndex = find(x, y);
+    return info[minIndex];
   }
 
   void insert(int index, int value) {
@@ -67,7 +72,7 @@ public:
     int mid = (start + end) / 2;
     insert(index, value, start, mid, i * 2);
     insert(index, value, mid + 1, end, i * 2 + 1);
-    if (info[v[i * 2]] >= info[v[i * 2 + 1]])
+    if (info[v[i * 2]] <= info[v[i * 2 + 1]])
       v[i] = v[i * 2];
     else
       v[i] = v[i * 2 + 1];
@@ -77,3 +82,31 @@ public:
     fill(v.begin(), v.end(), x);
   }
 };
+
+int n, m, k;
+
+vector<int> v;
+
+int main(){
+  ioset();
+  int i, j, x, y;
+  char c;
+  cin>>n>>m;
+  for(i=0; i<n+m; i++){
+    cin>>x;
+    v.push_back(x);
+  }
+  segment_tree tree(v);
+  cin>>k;
+  for(i=0; i<k; i++){
+    cin>>c;
+    if(c=='L'){
+      cout<<tree.find(0, n-1)+1<<' '<<tree.find(n, n+m-1)+1<<'\n';
+    }
+    else{
+      cin>>x>>y;
+      tree.insert(x-1, y);
+    }
+  }
+
+}

@@ -2,12 +2,18 @@ import sys
 input=lambda: sys.stdin.readline().strip()
 ints=lambda: list(map(int, input().split()))
 
-a, b=ints()
-k, x=ints()
+input()
+arr=set(input().split())
+input()
+arr|=set(input().split())
+input()
+arr-=set(input().split())
+input()
 
-ans=0
-for i in range(a, b+1):
-    if k-x<=i<=x+k:
-        ans+=1
-
-print(ans if ans else 'IMPOSSIBLE')
+s=input().split()
+for i in arr:
+    new=[]
+    for j in s:
+        new+=[k for k in j.split(i) if k]
+    s=new
+print(*s, sep='\n')
