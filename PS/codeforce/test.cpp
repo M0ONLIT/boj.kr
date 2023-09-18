@@ -1,84 +1,24 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <tuple>
-#include <cassert>
+#include<iostream>
+#include<vector>
+#include<tuple>
+#include<algorithm>
+
+#define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 using namespace std;
 
+int n, m;
+int arr[200005], big[200005], small[200005];
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+  ioset();
+  int i, j;
+  cin>>n>>m;
+  for(i=0; i<n; i++) cin>>arr[i];
+  for(i=0; i<n; i++) small[i]=((i==0)?arr[i]:min(small[i-1], arr[i]));
+  for(i=n-1; i>=0; i--) big[i]=((i==n-1)?arr[i]:max(big[i+1], arr[i]));
 
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> mem(n, vector<int>(m, 0));
-    vector<vector<int>> a(n, vector<int>(m));
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            cin >> a[i][j];
-        }
-    }
-
-    auto nearby = [&](int r, int c) -> vector<pair<int, int>> {
-        vector<pair<int, int>> adjacent_cells;
-        vector<pair<int, int>> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-
-        for (const auto& dir : directions) {
-            int dr = dir.first;
-            int dc = dir.second;
-            int nr = r + dr;
-            int nc = c + dc;
-
-            if (nr >= 0 && nr < n && nc >= 0 && nc < m && !mem[nr][nc]) {
-                adjacent_cells.push_back({nr, nc});
-            }
-        }
-
-        return adjacent_cells;
-    };
-
-    priority_queue<tuple<int, int, int>> Q;
-
-    for (int i = 0; i < m; i++) {
-        Q.push(make_tuple(a[0][i], 0, i));
-        mem[0][i] = 1;
-        Q.push(make_tuple(a[n - 1][i], n - 1, i));
-        mem[n - 1][i] = 1;
-    }
-
-    for (int i = 1; i < n - 1; i++) {
-        Q.push(make_tuple(a[i][0], i, 0));
-        mem[i][0] = 1;
-        Q.push(make_tuple(a[i][m - 1], i, m - 1));
-        mem[i][m - 1] = 1;
-    }
-
-    int tc;
-    cin >> tc;
-
-    while (tc--) {
-        int r, c;
-        while(1){
-            auto [s, R, C] = Q.top();
-            Q.pop();
-            if(mem[R][C]!=1) continue;
-            r=R, c=C;
-            break;
-        }
-
-        cout << r + 1 << " " << c + 1 << "\n";
-        mem[r][c]++;
-
-        vector<pair<int, int>> neighbors = nearby(r, c);
-        for (const auto& neighbor : neighbors) {
-            int i = neighbor.first;
-            int j = neighbor.second;
-            Q.push(make_tuple(a[i][j], i, j));
-            mem[i][j] = 1;
-        }
-    }
-
-    return 0;
+  int ans=-210000000;
+  for(i=0; i<=m; i++){
+    ans=max(ans, big[n-m+i-1]-small[i]);
+  }
+  cout<<ans;
 }
