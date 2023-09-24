@@ -1,24 +1,40 @@
-#include<iostream>
-#include<vector>
-#include<tuple>
-#include<algorithm>
-
-#define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
+#include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
-int n, m;
-int arr[200005], big[200005], small[200005];
 int main() {
-  ioset();
-  int i, j;
-  cin>>n>>m;
-  for(i=0; i<n; i++) cin>>arr[i];
-  for(i=0; i<n; i++) small[i]=((i==0)?arr[i]:min(small[i-1], arr[i]));
-  for(i=n-1; i>=0; i--) big[i]=((i==n-1)?arr[i]:max(big[i+1], arr[i]));
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-  int ans=-210000000;
-  for(i=0; i<=m; i++){
-    ans=max(ans, big[n-m+i-1]-small[i]);
-  }
-  cout<<ans;
+    int n;
+    cin >> n;
+
+    vector<vector<int>> info(n, vector<int>(3));
+    for (int i = 0; i < n; i++) {
+        cin >> info[i][0] >> info[i][1] >> info[i][2];
+    }
+
+    sort(info.begin(), info.end());
+
+    vector<int> dp(n);
+    vector<int> s(n), e(n), c(n), nxt(n);
+
+    for (int i = 0; i < n; i++) {
+        s[i] = info[i][0];
+        e[i] = info[i][1];
+        c[i] = info[i][2];
+    }
+
+    for (int i = 0; i < n; i++) {
+        nxt[i] = upper_bound(s.begin(), s.end(), e[i]) - s.begin();
+    }
+
+    for (int idx = n - 1; idx >= 0; idx--) {
+        dp[idx] = max(dp[idx + 1], dp[nxt[idx]] + c[idx]);
+    }
+
+    cout << dp[0] << endl;
+
+    return 0;
 }
