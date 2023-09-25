@@ -16,3 +16,6 @@ class UnionFind:
             self.parent[root_y] = root_x
         elif root_x < root_y:
             self.parent[root_x] = root_y
+
+    def equal(self, x, y):
+        return self.find(x)==self.find(y)
