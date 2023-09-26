@@ -5,7 +5,7 @@ class UnionFind:
     def find(self, x):
         if self.parent[x] == x:
             return x
-        self.parent[x] = self.find(self.parent[x])  # 경로 압축(Path Compression)을 통한 최적화
+        self.parent[x] = self.find(self.parent[x])
         return self.parent[x]
 
     def union(self, x, y):
