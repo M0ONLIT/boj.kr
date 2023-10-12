@@ -1,11 +1,16 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include "testlib.h"
 
-int main(){
-    ios_base::sync_with_stdio(false); cin.tie(nullptr);
-    int N; cin >> N;
-    for(int i=1; i<=N; i++){
-        if(i % 2 == 1) cout << "#" + string(N-1, '.') << "\n";
-        else cout << string(N-2+N%2, '.') + "#" + (N % 2 ? "" : ".") << "\n";
-    }
+int main()
+{
+    registerValidation();
+
+    int max=1e8;
+
+    int n = inf.readInt(2, max, "n");
+    inf.readSpace();
+    int k = inf.readInt(2, n-1, "k");
+
+    inf.readEoln();
+    inf.readEof();
+    return 0;
 }
