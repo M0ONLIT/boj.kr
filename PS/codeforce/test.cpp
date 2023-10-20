@@ -1,16 +1,29 @@
-#include "testlib.h"
+#include <iostream>
+#include <vector>
 
-int main()
-{
-    registerValidation();
+int main() {
+    std::ios_base::sync_with_stdio(0);
+    std::cout.tie(0);
 
-    int max=1e8;
+    int n, k;
+    std::cin >> n >> k;
+    std::vector<int> D;
 
-    int n = inf.readInt(2, max, "n");
-    inf.readSpace();
-    int k = inf.readInt(2, n-1, "k");
+    for (int i = 2; i < k + 2; i++) {
+        std::cout << "1 " << i << "\n";
+        D.push_back(i);
+    }
 
-    inf.readEoln();
-    inf.readEof();
+    int cnt = 0, curr;
+    for (int i = k + 2; i <= n; i++) {
+        if (cnt % (k - 1) == 0) {
+            curr = D[0];
+            D.erase(D.begin());
+        }
+        std::cout << curr << " " << i << "\n";
+        D.push_back(i);
+        cnt++;
+    }
+
     return 0;
 }
