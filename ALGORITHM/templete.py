@@ -22,11 +22,11 @@ def nearby4(y, x, n=n, m=m, dy=[0, 0, 1, -1], dx=[1, -1, 0, 0]):
         if 0<=y+dy[i]<n and 0<=x+dx[i]<m:
             ans.append((y+dy[i], x+dx[i]))
     return ans
-    
-def input_tree(n):
-    tree=[[] for i in range(n+1)]
+
+def input_graph(n):
+    graph=[[] for i in range(n+1)]
     for i in range(n-1):
         a, b=ints()
-        tree[a].append(b)
-        tree[b].append(a)
-    return tree
+        graph[a].append(b)
+        graph[b].append(a)
+    return graph
