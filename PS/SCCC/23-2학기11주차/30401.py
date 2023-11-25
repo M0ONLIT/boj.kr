@@ -73,6 +73,7 @@ def match(t, p, dp):
             if i_p==0:
                 break
             i_p=dp[i_p-1]
+    #return ans
     return 0
 
 n, m=ints()

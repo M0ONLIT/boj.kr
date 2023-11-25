@@ -16,10 +16,3 @@ int main(){
   ioset();
 
 }
-
-vector<int> input_vector(int n){
-  vector<int> v(n);
-  for(int i=0; i<n; i++)
-    cin>>v[i];
-  return v;
-}
