@@ -11,6 +11,12 @@ from decimal import *
 getcontext().prec=28
 d=Decimal
 
+def coordinate_compression(lst): #좌표압축
+    sorted_list=sorted(list(set(lst)))
+    compression_dict={value: index+1 for index, value in enumerate(sorted_list)}
+    compressed=[compression_dict[value] for value in lst]
+    return compressed
+
 def changetype(value, *types):
     for i in range(min(len(value), len(types))):
         value[i]=types[i](value[i])
