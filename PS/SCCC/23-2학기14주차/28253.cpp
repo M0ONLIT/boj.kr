@@ -10,9 +10,9 @@ typedef long long ll;
 typedef pair<int, int> pii;
 typedef pair<ll, ll> pll;
 
-const ll inf=(1LL<<63)-1;
-
 int main(){
     ioset();
+    string L, R, X;
+    cin >> L >> R >> X;
 
 }
