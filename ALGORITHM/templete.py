@@ -16,7 +16,7 @@ def POW(n, k, mod=mod):
         return 1
     ans=n*POW(n, k-1) if k%2 else POW(n, k//2)**2
     return ans%mod
-    
+
 def coordinate_compression(lst): #좌표압축
     sorted_list=sorted(list(set(lst)))
     compression_dict={value: index+1 for index, value in enumerate(sorted_list)}
