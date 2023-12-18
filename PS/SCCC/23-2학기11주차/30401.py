@@ -13,34 +13,71 @@ def input_graph(n):
         graph[b].append(a)
     return graph
 
-def ww1(node, mom, graph, visit, cnt):
-    if len(graph[node])>2:
-        return cnt, node
-    visit[node]=1
-    for nxt in graph[node]:
-        if nxt!=mom:
-            return ww1(nxt, node, graph, visit, cnt+1)
+def tree_to_int(tree, node, mom, code, value):
+    return int(tree_to_hash(tree, node, mom, code, value), 2)
 
-def ww2(node, graph, nodes, visit, tp, s):
-    if visit[node]:
-        return
-    visit[node]=1
+def tree_to_hash(tree, node, mom, code, value):
+    sons=[]
+    for nxt in tree[node]:
+        if nxt!=mom and code==value[nxt]:
+            sons.append(tree_to_hash(tree, nxt, node, code, value))
+    sons.sort()
 
-    cnt=0
-    tp.append(nodes[node])
-    for nxt in graph[node]:
-        ww2(nxt, graph, nodes, visit, tp, s)
+    return '1'+''.join(sons)+'0'
 
 def data(graph):
+    value=[0]*(n+m+1)
+    isroot=[0]*(n+m+1)
     visit=[0]*(n+m+1)
-    nodes=[0]*(n+m+1)
-    tp=[]
-    start=1
+    visit2=[0]*(n+m+1)
+    s=-1 #init
+
+    def ww(node, mom=-1):
+        nonlocal s, value, visit
+        if visit[node]:
+            return 0
+        visit[node]=1
+
+        for nxt in graph[node]:
+            if nxt==mom:
+                continue
+            if visit[nxt] and s==-1:
+                value[node]=-1
+                isroot[node]=1
+                s=nxt
+                continue
+            ww(nxt, node)
+            if value[nxt]==-1 and nxt!=s:
+                isroot[node]=1
+                value[node]=-1
+
+    def ww2(node, tp):
+        nonlocal visit2
+        if visit2[node] or not isroot[node]:
+            return
+        visit2[node]=1
+        tp.append(tree_to_int(graph, node, -1, node, value))
+        for nxt in graph[node]:
+            ww2(nxt, tp)
+
+    def dfs(node, mom, cnt):
+        nonlocal value
+        value[node]=cnt
+        for nxt in graph[node]:
+            if nxt==mom:
+                continue
+            dfs(nxt, node, cnt)
+
+    ww(1)
     for i in range(1, n+m+1):
-        if len(graph[i])==1:
-            value, start=ww1(i, -1, graph, visit, 0)
-            nodes[start]=value
-    ww2(start, graph, nodes, visit, tp, start)
+        if value[i]==-1:
+            for node in graph[i]:
+                if value[node]==0:
+                    dfs(node, i, i)
+            value[i]=i
+
+    tp=[]
+    ww2(s, tp)
     return tp
 
 def make_pi(s):
@@ -57,7 +94,8 @@ def make_pi(s):
             idx=pi[idx-1]
     return pi
 
-def match(t, p, dp):
+def match(t, p):
+    dp=make_pi(p)
     T, P=len(t), len(p)
     #ans=[]
     i_p=0
@@ -82,17 +120,15 @@ G2=input_graph(n+m)
 
 tp1=data(G1)
 tp2=data(G2)
+
 if len(tp1)!=len(tp2):
     print('Go to Minjun')
     exit()
 
 pattern1=tp1
 pattern2=tp1[::-1]
-pi1=make_pi(pattern1)
-pi2=make_pi(pattern2)
-
 pattern3=tp2*2
-if match(pattern3, pattern1, pi1) or match(pattern3, pattern2, pi2):
+if match(pattern3, pattern1) or match(pattern3, pattern2):
     print('Retry')
 else:
     print('Go to Minjun')
