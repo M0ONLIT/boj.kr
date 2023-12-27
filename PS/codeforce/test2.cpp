@@ -1,57 +1,60 @@
 #include<iostream>
+#include<algorithm>
 #include<vector>
 
 using namespace std;
 
-bool visited[9]; //[9]
+int arr[1000000];
+int result[1000000];
+
 vector<int> v;
-int n, m;
-/*
-bool check(int x)
+
+int binary_search(int target)
 {
-    for(int i = 0; i<v.size(); i++)
-        if(v[i] == x) return true;
-
-    return false;
-}
-*/
-void dfs(int x)
-{
-    v.push_back(x);
-
-    if(m == v.size()){
-        for(int i = 0; i<v.size(); i++) cout<<v[i]<<' ';
-        cout<<'\n';
-        v.pop_back();
-        visited[x]=false; //fill(visited[x], visited[x]+9, false);
-        return;
-    }
-
-    for(int i = 1; i<=n; i++)
+    int low = 0;
+    int high = v.size()-1;
+    while(low<=high)
     {
-        if(!visited[i]) //if(!visited[x][i] && !check(i))
-        {
-            visited[i] = true;
-            dfs(i);
-            visited[i] = false; //추가
-        }
+        int mid = (low+high)/2;
+
+        if(target == v[mid]) return mid;
+        else if(target > mid) low = mid+1;
+        else if(target < mid) high =mid-1;
     }
-    //fill(visited[x], visited[x]+9, false);
-    v.pop_back();
+
+    return 0;
 }
 
 int main()
 {
-    cin>>n>>m;
+    ios::sync_with_stdio(0);
+    cin.tie(0);
 
-    for(int i = 1; i<=n; i++)
+    int n;
+    cin>>n;
+
+    //fill(result, result+n, 0);
+
+    for(int i = 0; i<n; i++)
     {
-        visited[i] = true; //추가
-        dfs(i);
-        v.clear();
-        visited[i] = false; //추가
-        //for(int j = 1; j<=n; j++) fill(visited[j], visited[j]+9, false);
+        cin>>arr[i];
+
+        if(v.empty()) v.push_back(arr[i]);
+        else{
+            bool flag = true;
+            for(int j = 0; j<v.size(); j++) if(binary_search(arr[i]) != 0) flag = false;
+            if(flag) v.push_back(arr[i]);
+        }
     }
+
+
+    sort(v.begin(), v.end());
+
+    for(int i = 0; i<n; i++)
+        result[i] = binary_search(arr[i]);
+
+    for(int i = 0; i<n; i++) cout<<result[i]<<' ';
+    cout<<'\n';
 
     return 0;
 }

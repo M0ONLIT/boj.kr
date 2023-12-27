@@ -2,6 +2,7 @@ import sys
 input=lambda: sys.stdin.readline().strip()
 ints=lambda: list(map(int, input().split()))
 Int=lambda: int(input())
+from fractions import Fraction
 from queue import PriorityQueue
 from collections import deque
 from bisect import bisect
