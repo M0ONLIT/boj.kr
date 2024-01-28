@@ -1,60 +1,80 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
-
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits>
 using namespace std;
 
-int arr[1000000];
-int result[1000000];
+const int INF = numeric_limits<int>::max();
 
-vector<int> v;
-
-int binary_search(int target)
-{
-    int low = 0;
-    int high = v.size()-1;
-    while(low<=high)
-    {
-        int mid = (low+high)/2;
-
-        if(target == v[mid]) return mid;
-        else if(target > mid) low = mid+1;
-        else if(target < mid) high =mid-1;
+vector<vector<pair<int, int>>> input_graph(int n, int m) {
+    vector<vector<pair<int, int>>> graph(n + 1);
+    for (int i = 0; i < m; i++) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        graph[a].push_back({b, c});
+        graph[b].push_back({a, c});
     }
-
-    return 0;
+    return graph;
 }
 
-int main()
-{
-    ios::sync_with_stdio(0);
-    cin.tie(0);
+int d(int node, vector<int>& friend_list, const vector<vector<pair<int, int>>>& graph) {
+    int ans = 0;
+    vector<int> visit(graph.size(), 0);
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> Q;
+    Q.push({0, node});
 
-    int n;
-    cin>>n;
+    while (!Q.empty()) {
+        int dis = Q.top().first;
+        int node = Q.top().second;
+        Q.pop();
+        if (visit[node]) {
+            continue;
+        }
+        visit[node] = 1;
 
-    //fill(result, result+n, 0);
+        if (friend_list[node]) {
+            ans += dis;
+        }
+        for (const auto& [nxt, d_nxt] : graph[node]) {
+            if (!visit[nxt]) {
+                Q.push({dis + d_nxt, nxt});
+            }
+        }
+    }
+    return ans;
+}
 
-    for(int i = 0; i<n; i++)
-    {
-        cin>>arr[i];
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    vector<int> friend_list(n + 1, 0);
+    auto graph = input_graph(n, m);
+    int f;
+    cin >> f;
+    for (int i = 0; i < f; i++) {
+        int friend_node;
+        cin >> friend_node;
+        friend_list[friend_node] = 1;
+    }
 
-        if(v.empty()) v.push_back(arr[i]);
-        else{
-            bool flag = true;
-            for(int j = 0; j<v.size(); j++) if(binary_search(arr[i]) != 0) flag = false;
-            if(flag) v.push_back(arr[i]);
+    int ans_node, ans_dis = INF;
+    for (int node = 1; node <= n; node++) {
+        int distance = d(node, friend_list, graph);
+        if (distance < ans_dis) {
+            ans_dis = distance;
+            ans_node = node;
         }
     }
 
+    cout << ans_node << '\n';
+}
 
-    sort(v.begin(), v.end());
-
-    for(int i = 0; i<n; i++)
-        result[i] = binary_search(arr[i]);
-
-    for(int i = 0; i<n; i++) cout<<result[i]<<' ';
-    cout<<'\n';
-
+int main() {
+    ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
     return 0;
 }
