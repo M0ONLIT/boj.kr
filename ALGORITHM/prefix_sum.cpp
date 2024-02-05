@@ -25,5 +25,5 @@ prefix_sum<int> S;
 
 int main(){
   vector<int> v={1, 2, 3};
-  S=prefix_sum(v);
+  S=prefix_sum<int>(v);
 }
