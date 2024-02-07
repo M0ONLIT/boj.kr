@@ -16,7 +16,8 @@ public:
         return parent[x] = find(parent[x]);
     }
 
-    void union(int x, int y) {
+    void sum(int x, int y) {
+        if (x>=n || y>=n) return; //범위체크
         int root_x = find(x);
         int root_y = find(y);
 

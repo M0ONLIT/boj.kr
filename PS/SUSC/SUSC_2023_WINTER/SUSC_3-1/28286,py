@@ -1,0 +1,41 @@
+import sys
+from math import inf
+from collections import deque
+input=lambda: sys.stdin.readline().strip()
+ints=lambda: list(map(int, input().split()))
+Int=lambda: int(input())
+sys.setrecursionlimit(10**8)
+
+n, k=ints()
+test=ints()
+answer=ints()
+stack=[]
+ans=0
+
+def change(arr, p, option): #0: push, 1: pull
+    if option:
+        arr.pop(p)
+        arr.append(-1)
+    else:
+        arr.insert(p, -1)
+        arr.pop()
+
+def check():
+    global ans
+    arr=test[:]
+    for p, op in stack:
+        change(arr, p, op)
+    score=sum([arr[i]==answer[i] for i in range(n)])
+    ans=max(score, ans)
+
+def ww():
+    check()
+    if len(stack)==k:
+        return
+    for p in range(n):
+        for op in range(2):
+            stack.append((p, op))
+            ww()
+            stack.pop()
+ww()
+print(ans)

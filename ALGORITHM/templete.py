@@ -7,6 +7,7 @@ from queue import PriorityQueue
 from collections import deque
 from bisect import bisect
 from math import *
+sys.setrecursionlimit(10**8)
 
 from decimal import *
 getcontext().prec=28
@@ -34,6 +35,16 @@ def nearby4(y, x, n=n, m=m, dy=[0, 0, 1, -1], dx=[1, -1, 0, 0]):
     for i in range(4):
         if 0<=y+dy[i]<n and 0<=x+dx[i]<m:
             ans.append((y+dy[i], x+dx[i]))
+    return ans
+
+def nearby8(y, x, n=n, m=m, dy=[-1, 0, 1], dx=[-1, 0, 1]):
+    ans=[]
+    for i in dy:
+        for j in dx:
+            if i==j==0:
+                continue
+            if 0<=y+dy[i]<n and 0<=x+dx[j]<m:
+                ans.append((y+dy[i], x+dx[j]))
     return ans
 
 def input_graph(n, m):

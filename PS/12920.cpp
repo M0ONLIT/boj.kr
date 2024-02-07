@@ -6,30 +6,38 @@
 
 using namespace std;
 typedef long long ll;
-const ll inf=(1LL<<63)-1;
+typedef pair<ll, ll> pll;
 
-ll n, m, info[105][3];
-ll dp[105][10005];
-
+ll n, m;
+ll dp[10005], temp[10005];
+vector<pll> info;
 int main(){
     ioset();
-    int i, j, k;
+    int i, j, k, w, val, cnt;
 
     cin>>n>>m;
     for(i=0; i<n; i++){
-        cin>>info[i][0]>>info[i][1]>>info[i][2];
-    } //무게, 만족도, 개수;
-
+        ll temp=1;
+        cin>>w>>val>>cnt;
+        while(temp<=cnt){
+            info.push_back({w*temp, val*temp}); //무게, 만족도
+            cnt-=temp;
+            temp*=2;
+        }
+        if(cnt!=0)
+            info.push_back({w*cnt, val*cnt});
+    }
+    n=info.size();
     for(i=0; i<n; i++){
         for(j=0; j<=m; j++){
-            ll ans=0;
-            for(k=0; k<=info[i][2]; k++){
-                if(j<k*info[i][0])
-                    break;
-                ans=max(ans, (i==0?0:dp[i-1][j-k*info[i][0]])+k*info[i][1]);
-            }
-            dp[i][j]=ans;
+            ll w, val;
+            tie(w, val)=info[i];
+            if(w<=j)
+                dp[j]=max((i==0?0:temp[j-w])+val, i==0?0:temp[j]);
+			else
+				dp[j]=(i==0?0:temp[j]);
         }
+        for(j=0; j<=m; j++) temp[j]=dp[j];
     }
-    cout<<dp[n-1][m];
+    cout<<dp[m];
 }
