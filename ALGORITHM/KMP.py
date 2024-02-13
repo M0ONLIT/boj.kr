@@ -22,6 +22,7 @@ def match(t, p):
             if t[i_t]==p[i_p]:
                 if i_p==P-1:
                     ans.append(i_t-P+2)
+                    i_p=dp[i_p]
                 else:
                     i_p+=1
                 break
