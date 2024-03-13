@@ -1,30 +1,31 @@
-#include<iostream>
-#include<vector>
-#include<tuple>
-#include<algorithm>
+#include <stdio.h>
 
-#define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
+int main()
+{
+    int n;
+    scanf("%d",&n);
+    int num[n];
+    int i;
+    for(i=0;i<n;i++)
+    {
+        scanf("%d",&num[i]);
+    }
+    int temp=num[0];
+    for(i=1;i<n;i++)
+    {
+        if(num[i]>num[i-1])
+        {
+            temp= num[i];
+        }
+    }
+    double sum=0;
 
-using namespace std;
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+    for(i=0;i<n;i++)
+    {
+        sum = sum+((double)num[i]/temp)*100;
+    }
 
-int n, ans;
-vector<int> arr, stack;
-vector<pii> info;
+    printf("%f\n",(double)sum/n);
 
-int main(){
-    ioset();
-	int i;
-	cin>>n;
-	info.resize(n, {-1, -1});
-	for(i=0; i<n; i++){
-		cin>>j;
-		arr.push_back(j);
-	}
-	for(idx=0; idx<n; idx++){
-		while(!stack.empty() && stack.back()<arr[idx])
-	}
-	cout<<ans;
+    return 0;
 }

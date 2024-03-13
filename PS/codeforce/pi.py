@@ -14,7 +14,7 @@ def main():
             matching_substrings.append((substring, i))
     
     for substring, start_index in matching_substrings[:10]:
-        print(f"부분 문자열: {substring}, 시작 위치: {start_index}")
+        print(f"{substring} ", end=', ')
 
 if __name__ == "__main__":
     main()

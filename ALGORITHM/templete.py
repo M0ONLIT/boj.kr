@@ -1,4 +1,5 @@
 import sys
+input=io.BytesIO(os.read(0, os.fstat(0).st_size)).readline
 input=lambda: sys.stdin.readline().strip()
 ints=lambda: list(map(int, input().split()))
 Int=lambda: int(input())
