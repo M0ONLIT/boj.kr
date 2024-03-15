@@ -1,115 +1,89 @@
-#include <iostream>
-#include <string>
-#include <vector>
+#include<iostream>
+#include<vector>
+#include<tuple>
+#include<algorithm>
+#define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 using namespace std;
+typedef long long ll;
 
-// 두 문자열을 표현하는 숫자의 합 계산
-string addStrings(string num1, string num2) {
-    string res = "";
-    int carry = 0;
-    int n1 = num1.size() - 1, n2 = num2.size() - 1;
+class segment_tree {
+public:
+  vector<ll> info;
+  vector<ll> v;
+  ll m;
 
-    while (n1 >= 0 || n2 >= 0) {
-        int sum = carry;
-        if (n1 >= 0)
-            sum += num1[n1--] - '0';
-        if (n2 >= 0)
-            sum += num2[n2--] - '0';
-        res = to_string(sum % 10) + res;
-        carry = sum / 10;
-    }
+  segment_tree() {}
+  segment_tree(ll x){
+    m = x;
+    v = vector<ll>(m * 4);
+    info = vector<ll>(m);
+    make_tree(0, m - 1, 1);
+  }
+  segment_tree(vector<ll>& x) {
+    m = x.size();
+    v = vector<ll>(m * 4);
+    info = x;
+    make_tree(0, m - 1, 1);
+  }
 
-    if (carry)
-        res = to_string(carry) + res;
+  ll make_tree(ll start, ll end, ll i) {
+    ll mid = (start + end) / 2;
+    if (start == end)
+      return v[i] = info[mid];
+    return v[i] = make_tree(start, mid, i * 2) + make_tree(mid + 1, end, i * 2 + 1);
+  }
 
-    return res;
-}
-
-// 두 문자열 숫자의 차 계산
-string subStrings(string str1, string str2) {
-    bool isNegative = false;
-    if (str1.size() < str2.size())
-        swap(str1, str2), isNegative = true;
-    else if (str1.size() == str2.size() && str1 < str2)
-        isNegative = true;
-
-    string res = "";
-    int n1 = str1.size() - 1, n2 = str2.size() - 1;
-    int borrow = 0;
-
-    while (n2 >= 0) {
-        int sub = ((n1 >= 0) ? str1[n1] - '0' : 0) - borrow;
-        if (n2 >= 0)
-            sub -= (str2[n2] - '0');
-        if (sub < 0) {
-            sub += 10;
-            borrow = 1;
-        }
-        else
-            borrow = 0;
-
-        res = to_string(sub) + res;
-        n2--; n1--;
-    }
-
-    while (n1 >= 0) {
-        int sub = str1[n1] - '0' - borrow;
-        if (sub < 0) {
-            sub += 10;
-            borrow = 1;
-        }
-        else
-            borrow = 0;
-
-        res = to_string(sub) + res;
-        n1--;
-    }
-
-    auto it = res.find_first_not_of("0");
-    if (it != string::npos)
-        res = res.substr(it);
+  ll sum(ll x, ll y) { // 구간 합을 구한다.
+    return sum(x, y, 0, m - 1, 1);
+  }
+  ll sum(ll x, ll y, ll start, ll end, ll i) {
+    ll mid = (start + end) / 2;
+    if (y < start || end < x)
+      return 0;
+    else if (x <= start && end <= y)
+      return v[i];
     else
-        res = "0";
+      return sum(x, y, start, mid, i * 2) + sum(x, y, mid + 1, end, i * 2 + 1);
+  }
 
-    return isNegative ? "-" + res : res;
-}
+  void insert(ll index, ll value) {
+    return insert(index, value, 0, m - 1, 1);
+  }
+  void insert(ll index, ll value, ll start, ll end, ll i) {
+    ll mid = (start + end) / 2;
+    if (index < start || end < index)
+      return;
+    else if (start == end && mid == index) {
+      v[i] = value;
+      return;
+    }
+    else {
+      insert(index, value, start, mid, i * 2);
+      insert(index, value, mid + 1, end, i * 2 + 1);
+      v[i] = v[i * 2] + v[i * 2 + 1];
+      return;
+    }
+  }
 
-// 두 숫자를 문자열로 표현하여 곱셈 계산 (카라츠바 알고리즘)
-string multiply(string num1, string num2) {
-    int n1 = num1.size(), n2 = num2.size();
+  void init(ll x) {
+    fill(v.begin(), v.end(), x);
+  }
+};
 
-    // base case: 한 자리 수 곱셈
-    if (n1 == 1 || n2 == 1)
-        return to_string(stoll(num1) * stoll(num2));
+int main(){
+    ioset();
+    ll n, m, k, i;
 
-    // 두 숫자를 반으로 나누기
-    int maxDigits = max(n1, n2);
-    int mid = maxDigits / 2;
-    string a = num1.substr(0, mid);
-    string b = num1.substr(mid);
-    string c = num2.substr(0, mid);
-    string d = num2.substr(mid);
+    cin>>n>>m>>k;
+    vector<ll> v(n);
+    for(i=0; i<n; i++)
+        cin>>v[i];
 
-    // 재귀적으로 하위 문제 계산
-    string ac = multiply(a, c);
-    string bd = multiply(b, d);
-    string adbc = multiply(addStrings(a, b), addStrings(c, d));
-    string adbc_ac_bd = subStrings(adbc, addStrings(ac, bd));
-
-    // 가우스 기수법칙에 따라 계산
-    string res = ac + string(2 * maxDigits - 2 * mid, '0') + bd;
-    res = addStrings(res, adbc_ac_bd + string(maxDigits - mid, '0'));
-
-    return res;
-}
-
-int main() {
-    string num1, num2;
-    cin >> num1;
-    cin >> num2;
-
-    string res = multiply(num1, num2);
-    cout << res << endl;
-
-    return 0;
+    segment_tree tree(v);
+    for(i=0; i<m+k; i++){
+        ll a, b, c;
+        cin>>a>>b>>c;
+        if(a==1) tree.insert(b-1, c);
+        else cout<<tree.sum(b-1, c-1)<<'\n';
+    }
 }
