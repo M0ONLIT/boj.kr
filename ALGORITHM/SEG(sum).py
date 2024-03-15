@@ -16,7 +16,7 @@ class SegmentTree:
         return self.v[i]
 
     def sum(self, x, y):
-        return self._find(x, y, 0, self.m - 1, 1)
+        return self._sum(x, y, 0, self.m - 1, 1)
 
     def _sum(self, x, y, start, end, i):
         if y < start or x > end:

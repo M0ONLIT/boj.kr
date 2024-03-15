@@ -1,5 +1,5 @@
 import sys
-input=io.BytesIO(os.read(0, os.fstat(0).st_size)).readline
+sys.setrecursionlimit(10**8)
 input=lambda: sys.stdin.readline().strip()
 ints=lambda: list(map(int, input().split()))
 Int=lambda: int(input())
@@ -8,7 +8,7 @@ from queue import PriorityQueue
 from collections import deque
 from bisect import bisect
 from math import *
-sys.setrecursionlimit(10**8)
+input=io.BytesIO(os.read(0, os.fstat(0).st_size)).readline
 
 from decimal import *
 getcontext().prec=28
