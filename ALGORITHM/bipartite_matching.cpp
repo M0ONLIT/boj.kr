@@ -16,7 +16,7 @@ int dfs(int x){
       continue;
 
     memory[i]=1;
-    if(match[i]==0 || dfs(match[i])){
+    if(match[i]==0 || dfs(match[i])){ //match[i]는 그룹 i번에서 연결된 x(사람)을 의미함.
       match[i]=x;
       //cout<<x<<' '<<i<<endl;
       return 1;
