@@ -2,134 +2,164 @@
 #include<vector>
 #include<tuple>
 #include<algorithm>
+#include<deque>
+#include<memory.h>
+
 #define ioset() ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
+
 using namespace std;
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef tuple<int, int, int> iii;
 
-class SegmentTree {
-private:
-    int m;
-    vector<int> v;
-    vector<int> info;
-
-    int make_tree(int start, int end, int i) {
-        if (start == end) {
-            v[i] = start;
-        } else {
-            int mid = (start + end) / 2;
-            int left = make_tree(start, mid, i * 2);
-            int right = make_tree(mid + 1, end, i * 2 + 1);
-            if (info[left] >= info[right]) { // maximum
-                v[i] = left;
-            } else {
-                v[i] = right;
+const int mx=1010;
+const int po=15;
+int n, m, ptr;
+int arr[mx+1][mx+1], depth[mx+1][mx+1], visit[mx+1][mx+1], vertex[mx+1][mx+1];
+vector<iii> v, vv; //i, j, tree정점번호
+vector<int> tree[500010];
+int mom[po][500010];
+deque<iii> Q;
+vector<pair<int, int>> nearby8(int y, int x, int r = n+1, int c = n+1) {
+    int dy[] = {-1, 0, 1};
+    int dx[] = {-1, 0, 1};
+    vector<pii> ans;
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            if (i == 1 && j == 1) {
+                continue;
+            }
+            int ny = y + dy[i];
+            int nx = x + dx[j];
+            if (0 <= ny && ny <= r && 0 <= nx && nx <= c) {
+                ans.emplace_back(ny, nx);
             }
         }
-        return v[i];
     }
+    return ans;
+}
 
-    int _find(int x, int y, int start, int end, int i) {
-        if (y < start || x > end) {
-            return -1;
-        }
-        if (x <= start && end <= y) {
-            return v[i];
-        }
-        int mid = (start + end) / 2;
-        int left = _find(x, y, start, mid, i * 2);
-        int right = _find(x, y, mid + 1, end, i * 2 + 1);
-        if (left == -1) {
-            return right;
-        } else if (right == -1) {
-            return left;
-        } else {
-            return info[left] >= info[right] ? left : right; // maximum
+vector<pair<int, int>> nearby4(int y, int x, int r = n+1, int c = n+1) {
+    int dy[] = {0, 0, 1, -1};
+    int dx[] = {1, -1, 0, 0};
+    vector<pii> ans;
+    for (int i = 0; i < 4; ++i) {
+        int ny = y + dy[i];
+        int nx = x + dx[i];
+        if (0 <= ny && ny <= r && 0 <= nx && nx <= c) {
+            ans.emplace_back(ny, nx);
         }
     }
+    return ans;
+}
 
-    void _insert(int index, int value, int start, int end, int i) {
-        if (index < start || index > end) {
-            return;
+void dfs(int i, int j, int cur){
+    if(visit[i][j]++) return;
+    vertex[i][j]=cur;
+    for(pii p: nearby4(i, j)){
+        int nxti, nxtj; tie(nxti, nxtj)=p;
+        if(depth[i][j]<depth[nxti][nxtj])
+            vv.push_back({nxti, nxtj, cur});
+        else if(depth[i][j]==depth[nxti][nxtj])
+            dfs(nxti, nxtj, cur);
+    }
+}
+
+int upto(int x, int d){
+	int i;
+	if(d)
+	  for(i=0; i<po; i++)
+		  if(d&(1<<i))
+			  x=mom[i][x];
+	return x;
+}
+
+int lca(int x, int y, int d1, int d2){
+	int i;
+	if(d1<d2){swap(d1, d2); swap(x, y);}
+	x=upto(x, d1-d2);
+
+    int ans=d2;
+	if(x!=y){
+	    for(i=po-1; i>=0; i--){
+			if(mom[i][x]!=mom[i][y]){
+				x=mom[i][x];
+				y=mom[i][y];
+                ans-=(1<<i);
+			}
+		}
+		x=upto(x, 1);
+        ans--;
+	}
+	return ans;
+}
+
+void print_arr(int arr[mx+1][mx+1]){
+    int i, j;
+    for(i=0; i<=n+1; i++){
+        for(j=0; j<=n+1; j++)
+            cout<<arr[i][j];
+        cout<<'\n';
+    } cout<<'\n';
+}
+
+int main(){
+    //ioset();
+    int i, j;
+    cin>>n;
+    for(i=1; i<=n; i++) for(j=1; j<=n; j++){
+        char x;
+        cin>>x;
+        if(x=='.') arr[i][j]=1;
+    }
+    for(i=0; i<=n+1; i++) for(j=0; j<=n+1; j++)
+        if(arr[i][j]==0){
+            Q.push_back({i, j, 0});
+            v.push_back({i, j, 0});
         }
-        if (start == end && start == index) {
-            info[index] = value;
-            v[i] = index;
-            return;
+    while(!Q.empty()){
+        int i, j, d; tie(i, j, d)=Q.front(); Q.pop_front();
+        if(visit[i][j]++) continue;
+        depth[i][j]=d;
+        for(pii p: nearby8(i, j))
+            Q.push_back({p.first, p.second, d+1});
+    }
+    print_arr(depth);
+    memset(visit, 0, sizeof(visit));
+    while(!v.empty()){
+        for(iii p: v){
+            int i, j, prev; tie(i, j, prev)=p;
+            if(visit[i][j]) continue;
+            if(depth[i][j]) ptr++;
+            if(prev!=ptr){
+                tree[prev].push_back(ptr);
+                mom[0][ptr]=prev;
+            }
+            dfs(i, j, ptr);
         }
-        int mid = (start + end) / 2;
-        _insert(index, value, start, mid, i * 2);
-        _insert(index, value, mid + 1, end, i * 2 + 1);
-        if (info[v[i * 2]] >= info[v[i * 2 + 1]]) { // maximum
-            v[i] = v[i * 2];
-        } else {
-            v[i] = v[i * 2 + 1];
-        }
+        v.clear();
+        v.swap(vv);
     }
-
-public:
-    SegmentTree(vector<int>& x) {
-        m = x.size();
-        v.assign(m * 4, 0);
-        info = x;
-        make_tree(0, m - 1, 1);
+    print_arr(vertex);
+    /*
+    for(i=0; i<=ptr; i++){
+        cout<<i<<": ";
+        for(int j: tree[i]) cout<<j<<", ";
+        cout<<'\n';
     }
+    */
+    for(i=0; i<=ptr; i++) cout<<mom[0][i]<<'!'; cout<<'\n';
+	for(i=1; i<po; i++)
+		for(j=0; j<=ptr; j++)
+			mom[i][j]=mom[i-1][mom[i-1][j]];
 
-    int find(int x, int y) {
-        return _find(x, y, 0, m - 1, 1);
+    cin>>m;
+    while(m--){
+        int y1, x1, y2, x2, d1, d2, v1, v2;
+        cin>>y1>>x1>>y2>>x2;
+        d1=depth[y1][x1]; d2=depth[y2][x2];
+        v1=vertex[y1][x1]; v2=vertex[y2][x2];
+        cout<<max(2*lca(v1, v2, d1, d2)-1, 0)<<'\n';
     }
-
-    int get(int x, int y) {
-        int min_index = find(x, y);
-        return info[min_index];
-    }
-
-    void insert(int index, int value) {
-        _insert(index, value, 0, m - 1, 1);
-    }
-
-    void init(int x) {
-        fill(v.begin(), v.end(), x);
-    }
-};
-
-int main() {
-    ioset();
-
-    int n;
-    cin >> n;
-    vector<int> array(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> array[i];
-    }
-
-    vector<pair<int, int>> arr;
-    for (int i = 0; i < n; ++i) {
-        arr.emplace_back(array[i], -i);
-    }
-    sort(arr.begin(), arr.end());
-
-    vector<int> v(n+10);
-    SegmentTree seg(v);
-    vector<int> back(n, -1);
-
-    for (auto& p : arr) {
-        int idx = -p.second;
-        int val = p.first;
-        int i = seg.find(0, max(idx - 1, 0));
-        if (seg.get(i, i) != 0) {
-            back[idx] = i;
-        }
-        seg.insert(idx, seg.get(i, i) + 1);
-    }
-
-    int ans = seg.find(0, n - 1);
-    vector<int> ans_list;
-    while (ans != -1) {
-        ans_list.push_back(array[ans]);
-        ans = back[ans];
-    }
-
-    reverse(ans_list.begin(), ans_list.end());
-    cout << ans_list.size() << '\n';
-    for (int x : ans_list)
-        cout << x << ' ';
 }

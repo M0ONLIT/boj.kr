@@ -12,8 +12,7 @@ public:
 	int visit[100005];
 	vector<int> tree[100005];
 
-	LCA(vector<int> x)
-
+	LCA(vector<int> x){}
 
 	void dfs(int Mom, int x, int d){
 		if(visit[x]++)
@@ -71,7 +70,7 @@ int main(){
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
-*/
+    */
 	cin>>n;
 	for(i=0;i<n-1;i++){
 		cin>>x>>y;

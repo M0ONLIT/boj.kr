@@ -7,7 +7,7 @@ class SegmentTree:
 
     def make_tree(self, start, end, i):
         if start == end:
-            self.v[i] = start
+            self.v[i] = info[start]
         else:
             mid = (start + end) // 2
             left = self.make_tree(start, mid, i * 2)
@@ -20,7 +20,7 @@ class SegmentTree:
 
     def _sum(self, x, y, start, end, i):
         if y < start or x > end:
-            return -1
+            return 0
         if x <= start and end <= y:
             return self.v[i]
         mid = (start + end) // 2
