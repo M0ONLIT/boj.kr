@@ -22,7 +22,7 @@ class UnionFind {
 public:
     vector<int> parent;
     vector<int> size;
-    vector<int> ans;
+    vector<ll> ans;
     vector<map<int, int>> info; //map<int, int>는 회사, 개수
     UnionFind(int n) {
         parent.resize(n);
@@ -68,7 +68,7 @@ public:
     void mergeMaps(map<int, int>& a, map<int, int>& b, int w) {
         for (const auto& [key, value] : a) {
             b[key] += value;
-            ans[key] += (b[key]-value)*value*w;
+            ans[key] += (ll)(b[key]-value)*value*w;
         }
         a.clear();
     }
