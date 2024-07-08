@@ -36,7 +36,7 @@ class SegmentTree:
             return
         if start == end == index:
             self.info[index] = value
-            self.v[i] = index
+            self.v[i] = value
             return
         mid = (start + end) // 2
         self._insert(index, value, start, mid, i * 2)

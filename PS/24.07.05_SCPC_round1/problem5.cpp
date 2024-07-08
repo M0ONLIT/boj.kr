@@ -65,7 +65,7 @@ int main(int argc, char** argv){
         }
 
         int SQRT=sqrt(n);
-        sort(query.begin(), query.end(), [&SQRT](iii &x, iii &y)->bool{
+        sort(query.begin(), query.end(), [&SQRT](iii &x, iii &y){
             if(get<0>(x)/SQRT==get<0>(y)/SQRT)
                 return get<1>(x)<get<1>(y);
             return get<0>(x)/SQRT<get<0>(y)/SQRT;

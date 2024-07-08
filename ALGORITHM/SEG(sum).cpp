@@ -1,66 +1,45 @@
 #include <vector>
+#include<iostream>
 using namespace std;
+typedef long long ll;
 
 class segment_tree {
 public:
-  vector<int> info;
-  vector<int> v;
-  int m;
+    int SZ;
+    vector<ll> T;
 
-  segment_tree() {}
-  segment_tree(int x){
-    m = x;
-    v = vector<int>(m * 4);
-    info = vector<int>(m);
-    make_tree(0, m - 1, 1);
-  }
-  segment_tree(vector<int>& x) {
-    m = x.size();
-    v = vector<int>(m * 4);
-    info = x;
-    make_tree(0, m - 1, 1);
-  }
-
-  int make_tree(int start, int end, int i) {
-    int mid = (start + end) / 2;
-    if (start == end)
-      return v[i] = info[mid];
-    return v[i] = make_tree(start, mid, i * 2) + make_tree(mid + 1, end, i * 2 + 1);
-  }
-
-  int sum(int x, int y) { // 구간 합을 구한다.
-    return sum(x, y, 0, m - 1, 1);
-  }
-  int sum(int x, int y, int start, int end, int i) {
-    int mid = (start + end) / 2;
-    if (y < start || end < x)
-      return 0;
-    else if (x <= start && end <= y)
-      return v[i];
-    else
-      return sum(x, y, start, mid, i * 2) + sum(x, y, mid + 1, end, i * 2 + 1);
-  }
-
-  void insert(int index) {
-    return insert(index, 1, 0, m - 1, 1);
-  }
-  void insert(int index, int value, int start, int end, int i) {
-    int mid = (start + end) / 2;
-    if (index < start || end < index)
-      return;
-    else if (start == end && mid == index) {
-      v[i] += value;
-      return;
+    segment_tree(int n){
+        SZ=n;
+        T.resize(SZ*2);
     }
-    else {
-      insert(index, value, start, mid, i * 2);
-      insert(index, value, mid + 1, end, i * 2 + 1);
-      v[i] = v[i * 2] + v[i * 2 + 1];
-      return;
+    segment_tree(vector<int> &x){
+        SZ=x.size();
+        T.resize(SZ*2);
+        for(int i=0; i<SZ; i++) T[i+SZ]=x[i];
+        for(int i=SZ-1; i>0; i--) T[i]=T[i*2]+T[i*2+1];
     }
-  }
 
-  void init(int x) {
-    fill(v.begin(), v.end(), x);
-  }
+    void insert(int x, ll v){ // x번째 수를 v로 지정, x는 0 이상 SZ 미만
+        T[x+=SZ]=v;
+        while(x/=2) T[x]=T[x*2]+T[x*2+1];
+    }
+
+    ll sum(int l, int r){ // [l, r] 구간의 합
+        ll ans=0;
+        for(l+=SZ, r+=SZ; l<=r; l/=2, r/=2){
+            if(l%2==1) ans+=T[l++];
+            if(r%2==0) ans+=T[r--];
+        }
+        return ans;
+    }
+
+    void init(){
+        T.assign(SZ*2, 0);
+    }
 };
+
+
+int main(){
+    cout<<1;
+    return 0;
+}

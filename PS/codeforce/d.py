@@ -8,15 +8,15 @@ input=lambda: sys.stdin.readline().strip()
 ints=lambda: list(map(int, input().split()))
 Int=lambda: int(input())
 
-n=Int()
-arr=[ints() for i in range(n+1)]
-s, e=ints()
+f=open('input.txt', 'w')
+f.write('1\n')
 
-def p(x):
-    for i in range(n):
-        (a1, b1), (a2, b2)=arr[i], arr[i+1]
-        if a1<=x<=a2: break
-    y=F(b1-b2, a1-a2)*(x-a1)+b1
-    return x, y
-s, e=p(s), p(e)
-print(abs(F(s[1]-e[1], s[0]-e[0])))
+n=100000
+f.write(f'{n}\n')
+for i in range(1, n+1):
+    f.write(f'{i} ')
+f.write('\n')
+for i in range(1, n+1)[::-1]:
+    f.write(f'{i} ')
+f.write('\n')
+f.close()
