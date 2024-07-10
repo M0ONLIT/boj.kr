@@ -1,47 +1,38 @@
-class SegmentTree:
-    def __init__(self, x):
-        self.m = len(x)
-        self.v = [0] * (self.m * 4)
-        self.info = x
-        self.make_tree(0, self.m - 1, 1)
-
-    def make_tree(self, start, end, i):
-        if start == end:
-            self.v[i] = info[start]
+class segment_tree:
+    def __init__(self, n):
+        if isinstance(n, int):
+            self.SZ = n
+            self.T = [0] * (self.SZ * 2)
         else:
-            mid = (start + end) // 2
-            left = self.make_tree(start, mid, i * 2)
-            right = self.make_tree(mid + 1, end, i * 2 + 1)
-            self.v[i] = left + right
-        return self.v[i]
+            x = n
+            self.SZ = len(x)
+            self.T = [0] * (self.SZ * 2)
+            for i in range(self.SZ):
+                self.T[i + self.SZ] = x[i]
+            for i in range(self.SZ - 1, 0, -1):
+                self.T[i] = self.T[i * 2] + self.T[i * 2 + 1]
 
-    def sum(self, x, y):
-        return self._sum(x, y, 0, self.m - 1, 1)
+    def insert(self, x, v):  # x번째 수를 v로 지정, x는 0 이상 SZ 미만
+        x += self.SZ
+        self.T[x] = v
+        while x > 1:
+            x //= 2
+            self.T[x] = self.T[x * 2] + self.T[x * 2 + 1]
 
-    def _sum(self, x, y, start, end, i):
-        if y < start or x > end:
-            return 0
-        if x <= start and end <= y:
-            return self.v[i]
-        mid = (start + end) // 2
-        left = self._sum(x, y, start, mid, i * 2)
-        right = self._sum(x, y, mid + 1, end, i * 2 + 1)
-        return left + right
+    def sum(self, l, r):  # [l, r] 구간의 합
+        ans = 0
+        l += self.SZ
+        r += self.SZ
+        while l <= r:
+            if l % 2 == 1:
+                ans += self.T[l]
+                l += 1
+            if r % 2 == 0:
+                ans += self.T[r]
+                r -= 1
+            l //= 2
+            r //= 2
+        return ans
 
-    def insert(self, index, value):
-        self._insert(index, value, 0, self.m - 1, 1)
-
-    def _insert(self, index, value, start, end, i):
-        if index < start or index > end:
-            return
-        if start == end == index:
-            self.info[index] = value
-            self.v[i] = value
-            return
-        mid = (start + end) // 2
-        self._insert(index, value, start, mid, i * 2)
-        self._insert(index, value, mid + 1, end, i * 2 + 1)
-        self.v[i] = self.v[i * 2] + self.v[i * 2 + 1]
-
-    def init(self, x = 0):
-        self.v = [x] * (self.m * 4)
+    def init(self):
+        self.T = [0] * (self.SZ * 2)
