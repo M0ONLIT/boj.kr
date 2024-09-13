@@ -23,3 +23,19 @@ def d(s, e, tree):
         ans.append(node)
         node=back[node]
     return ans[::-1]
+
+
+#ans는 s에서부터 나머지 정점까지의 거리
+def d(s, tree):
+    visit=[0]*(n+1)
+    ans=[-1]*(n+1)
+
+    Q=[(0, s)]
+    while Q:
+        dis, v=heappop(Q)
+        if visit[v]: continue
+        visit[v]=1
+        ans[v]=dis
+        for nxt, dist in tree[v]:
+            heappush(Q, (dis+dist, nxt))
+    return ans

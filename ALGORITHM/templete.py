@@ -56,6 +56,14 @@ def input_graph(n, m):
         graph[b].append(a)
     return graph
 
+def input_graph(n, m):
+    graph=[[] for i in range(n+1)]
+    for i in range(m):
+        a, b, c=ints()
+        graph[a].append((b, c))
+        graph[b].append((a, c))
+    return graph
+
 def input_tree(n):
     tree=[[] for i in range(n+1)]
     for i in range(n-1):
